@@ -2,7 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <meta name="theme-color" content="#0f766e">
 <title>ورد الصلاة على النبي ﷺ</title>
 <style>
@@ -10,7 +12,9 @@
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a18;--card:#162623;--ink:#e8f1ee;--mut:#8fa6a0;--pri:#14b8a6;--pri2:#5eead4;--gold:#e5b653;--line:#24403a;--cell:#1c312d;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0e1a18;--card:#162623;--ink:#e8f1ee;--mut:#8fa6a0;--pri:#14b8a6;--pri2:#5eead4;--gold:#e5b653;--line:#24403a;--cell:#1c312d;color-scheme:dark}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input{-webkit-user-select:text;user-select:text}
 html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",system-ui,sans-serif;min-height:100vh;display:flex;justify-content:center}
 .app{width:100%;max-width:440px;padding:18px 16px 32px}
@@ -45,7 +49,7 @@ h1{font-size:20px;margin:4px 0 2px;text-align:center}
 .c.fut{opacity:.4}
 h2{font-size:15px;margin:0 0 4px}
 .set{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;margin-top:8px}
-input[type=number]{width:90px;background:var(--cell);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px;font:inherit;text-align:center}
+input[type=number]{font-size:16px;width:90px;background:var(--cell);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px;font:inherit;text-align:center}
 .fin{text-align:center;color:var(--gold);font-weight:700;margin-top:10px;display:none}
 .link{color:var(--mut);font-size:12px;background:none;border:0;cursor:pointer;font-family:inherit;text-decoration:underline}
 </style>
@@ -81,7 +85,12 @@ input[type=number]{width:90px;background:var(--cell);border:1px solid var(--line
   <div class="card">
     <h2>الإعدادات</h2>
     <div class="set"><span>الهدف اليومي</span><input type="number" id="target" min="1" max="100000"></div>
-    <div class="row" style="margin-top:12px"><button class="btn" id="share">📤 مشاركة التطبيق (مع تقدّمك)</button></div>
+    <div class="row" style="margin-top:12px"><button class="btn" id="bk">💾 حفظ نسخة احتياطية</button><button class="btn" id="rs">📥 استرجاع نسخة</button></div>
+<div class="row" style="margin-top:8px"><button class="btn" id="cp">📋 نسخ كنص</button><button class="btn" id="pt">📝 استرجاع من نص</button></div>
+<input type="file" id="rf" accept=".json,application/json,text/plain" style="display:none">
+<div class="row" style="margin-top:8px"><button class="btn" id="upd">🔄 تحديث التطبيق</button></div>
+<div class="sub" id="ver" style="margin:8px 0 0"></div>
+<div class="row" style="margin-top:8px"><button class="btn" id="share">📤 مشاركة التطبيق (مع تقدّمك)</button></div>
     <div class="row" style="margin-top:8px"><button class="link" id="reset">مسح كل العدّادات</button></div>
   </div>
 </div>
@@ -165,6 +174,38 @@ try{file=new File([html],name,{type:'text/html'})}catch(e){file=null}
 var fb=function(){try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);say('تم تجهيز الملف للحفظ')}catch(e){say('المشاركة غير متاحة هنا')}};
 if(file&&navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'ورد الصلاة على النبي'}).catch(function(e){if(!e||e.name!=='AbortError')fb()})}else fb()};
 
+['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,function(e){e.preventDefault()})});
+var VER='2026-11-11.3';
+$('ver').textContent='الإصدار '+VER;
+function backupText(){return JSON.stringify({app:'salawat-wird',v:1,exported:new Date().toISOString(),target:S.target,counts:S.counts})}
+$('bk').onclick=function(){
+var txt=backupText(),name='salawat-backup-'+today()+'.json',file;
+try{file=new File([txt],name,{type:'application/json'})}catch(e){file=null}
+var fb=function(){try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);say('تم تجهيز النسخة للحفظ')}catch(e){say('استخدم نسخ كنص')}};
+if(file&&navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'نسخة ورد الصلاة'}).catch(function(e){if(!e||e.name!=='AbortError')fb()})}else fb()};
+function restore(txt){
+var o;try{o=JSON.parse(txt)}catch(e){say('النسخة غير صالحة');return}
+if(!o||o.app!=='salawat-wird'||!o.counts||typeof o.counts!=='object'){say('النسخة غير صالحة');return}
+var added=0,k,v;
+for(k in o.counts){v=+o.counts[k];if(/^\d{4}-\d\d-\d\d$/.test(k)&&v>0&&v>get(k)){S.counts[k]=v;added++}}
+if(o.target>0)S.target=o.target;
+save();render();say('تم الاسترجاع ✅ ('+ar(added)+' يوم)')}
+$('rs').onclick=function(){$('rf').click()};
+$('rf').onchange=function(){var f=this.files&&this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){restore(String(r.result))};r.readAsText(f);this.value=''};
+$('cp').onclick=function(){var t=backupText();
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){say('تم النسخ — الصقه في واتساب لنفسك')},function(){window.prompt('انسخ النص:',t)})}else window.prompt('انسخ النص:',t)};
+$('pt').onclick=function(){var t=window.prompt('الصق نص النسخة هنا');if(t)restore(t)};
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+function check(manual){
+if(!/^https?:/.test(location.protocol)){if(manual)say('التحديث متاح من الرابط فقط');return}
+var base=location.href.split('?')[0].split('#')[0];
+fetch(base+'?nc='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(h){
+var m=h.match(/var VER='([^']+)'/);
+if(m&&m[1]!==VER){say('يوجد إصدار أحدث، جارٍ التحديث…');setTimeout(function(){location.replace(base+'?v='+encodeURIComponent(m[1]))},700)}
+else if(manual)say('أنت على آخر إصدار ✅')
+}).catch(function(){if(manual)say('تعذّر التحقق، تأكد من الاتصال')})}
+$('upd').onclick=function(){check(true)};
+check(false);
 // PWA: manifest + icon embedded as data URIs
 var icon='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#0f766e"/><path d="M300 110a150 150 0 1 0 0 292 120 120 0 0 1 0-292z" fill="#f4d58d"/></svg>');
 try{
