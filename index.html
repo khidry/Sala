@@ -6,8 +6,9 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta name="theme-color" content="#0f766e">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>ورد الصلاة على النبي ﷺ</title>
 <style>
 :root{--bg:#f6f3ea;--card:#fff;--ink:#16302b;--mut:#6b7f7a;--pri:#0f766e;--pri2:#14b8a6;--gold:#c8962e;--line:#e3ded0;--cell:#efeadb;
@@ -50,7 +51,7 @@ input{-webkit-user-select:text;user-select:text}
 .stats div{background:var(--cell);border-radius:14px;padding:6px 4px}
 .stats b{display:block;font-size:18px;color:var(--pri)}
 .stats span{font-size:12px;color:var(--mut)}
-.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:6px -4px 0;padding:5px 5px 18px;overflow-y:auto;overflow-x:hidden;flex:1;min-height:0;align-content:start;-webkit-overflow-scrolling:touch;scrollbar-width:none;-webkit-mask-image:linear-gradient(#000 calc(100% - 16px),transparent);mask-image:linear-gradient(#000 calc(100% - 16px),transparent)}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:6px -4px 0;padding:5px 5px 18px;overflow-y:auto;overflow-x:hidden;flex:1;min-height:0;align-content:start;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .grid::-webkit-scrollbar{display:none}
 .c{aspect-ratio:1;border-radius:12px;background:var(--cell);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;color:var(--mut);line-height:1.25}
 .c small{font-size:10px;min-height:12px}
@@ -265,7 +266,7 @@ function pinUi(){$('pinb').textContent=S.pin?'تغيير':'تعيين';$('pinx')
 function newPin(){pinModal('رقم سري جديد (٤ أرقام على الأقل)',function(v){return /^\d{4,12}$/.test(v)?null:'اكتب ٤ أرقام على الأقل'},function(a){pinModal('أعد كتابة الرقم',function(v){return v===a?null:'الرقمان غير متطابقين'},function(){S.pin=hp2(a);save();pinUi();say('تم حفظ الرقم السري ✅')})})}
 $('pinb').onclick=function(){if(S.pin)pinModal('الرقم السري الحالي',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},newPin);else newPin()};
 $('pinx').onclick=function(){pinModal('الرقم السري الحالي',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},function(){delete S.pin;save();pinUi();say('تمت إزالة الرقم السري')})};
-var VER='2026-11-11.9';
+var VER='2026-11-11.11';
 $('ver').textContent='الإصدار '+VER;
 function backupText(){return JSON.stringify({app:'salawat-wird',v:2,exported:new Date().toISOString(),target:S.target,rate:S.rate,counts:S.counts})}
 $('bk').onclick=function(){
@@ -287,7 +288,7 @@ $('rf').onchange=function(){var f=this.files&&this.files[0];if(!f)return;var r=n
 $('cp').onclick=function(){var t=backupText();
 if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){say('تم النسخ — الصقه في واتساب لنفسك')},function(){window.prompt('انسخ النص:',t)})}else window.prompt('انسخ النص:',t)};
 $('pt').onclick=function(){var t=window.prompt('الصق نص النسخة هنا');if(t)restore(t)};
-try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+
 
 function build(){var c=document.documentElement.cloneNode(true);
 Array.prototype.forEach.call(c.querySelectorAll('link'),function(n){n.parentNode.removeChild(n)});
@@ -312,22 +313,9 @@ else if(manual)say('أنت على آخر إصدار ✅')
 $('upd').onclick=function(){check(true)};
 check(false);
 
-// PWA: manifest + icon embedded as data URIs
-var ISVG='<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14b8a6"/><stop offset="1" stop-color="#0b4f4a"/></linearGradient></defs><rect width="512" height="512" fill="url(#g)"/><rect x="26" y="26" width="460" height="460" rx="72" fill="none" stroke="#f4d58d" stroke-opacity=".6" stroke-width="5"/><path d="M276 70a50 50 0 1 0 0 96a62 62 0 0 1 0-96z" fill="#f4d58d"/><circle cx="304" cy="118" r="8" fill="#f4d58d"/><g font-family="Noto Naskh Arabic,Geeza Pro,Arabic Typesetting,Tahoma,serif" font-weight="700" text-anchor="middle"><text x="256" y="290" font-size="70" fill="#fff">عليه الصلاة</text><text x="256" y="410" font-size="100" fill="#f4d58d">والسلام</text></g></svg>';
-var icon='data:image/svg+xml;utf8,'+encodeURIComponent(ISVG);
-// iOS and Android need PNG icons: draw the SVG on a canvas and swap them in
-(function(){var im=new Image();im.onload=function(){try{
-var png=function(sz){var c=document.createElement('canvas');c.width=c.height=sz;c.getContext('2d').drawImage(im,0,0,sz,sz);return c.toDataURL('image/png')};
-var a=document.getElementById('ati');if(a)a.href=png(180);
-var man=window.__man,m=document.getElementById('mfl');if(!m&&man){m=document.createElement('link');m.id='mfl';m.rel='manifest';document.head.appendChild(m)}
-if(m&&man){man.icons=[{src:png(192),sizes:'192x192',type:'image/png',purpose:'any'},{src:png(512),sizes:'512x512',type:'image/png',purpose:'any'}];m.href='data:application/manifest+json;charset=utf-8,'+encodeURIComponent(JSON.stringify(man))}
-}catch(e){}};im.onerror=function(){var man=window.__man;if(man){var m=document.createElement('link');m.rel='manifest';m.href='data:application/manifest+json;charset=utf-8,'+encodeURIComponent(JSON.stringify(man));document.head.appendChild(m)}};im.src=icon})();
-try{
-  var l=document.createElement('link');l.rel='icon';l.href=icon;document.head.appendChild(l);
-  var a=document.createElement('link');a.id='ati';a.rel='apple-touch-icon';a.href=icon;document.head.appendChild(a);
-  var SU=function(){return /^https?:/.test(location.protocol)?location.href.split('?')[0].split('#')[0]:'.'},SC=(function(){var u=SU(),i=u.lastIndexOf('/');return i>0?u.slice(0,i+1):'.'})();var man={name:'ورد الصلاة على النبي',short_name:'ورد الصلاة',lang:'ar',dir:'rtl',display:'standalone',background_color:'#f6f3ea',theme_color:'#0f766e',start_url:SU(),scope:SC,id:SU(),icons:[{src:icon,sizes:'512x512',type:'image/svg+xml',purpose:'any'}]};window.__man=man;
-  
-}catch(e){}
+// Service worker (needed for the Android install prompt)
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){try{navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}}
+
 theme();drawM();render();tick();pinUi();
 })();
 </script>
