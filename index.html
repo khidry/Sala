@@ -59,9 +59,14 @@ input[type=number]{font-size:16px;width:80px;background:var(--cell);border:1px s
 .ms{display:flex;gap:6px}.ms input{width:64px}
 .fin{text-align:center;color:var(--gold);font-weight:700;margin-top:10px;display:none}
 .link{color:var(--mut);font-size:12px;background:none;border:0;cursor:pointer;font-family:inherit;text-decoration:underline}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
 .ov.on{display:flex}
-.box{background:var(--card);width:100%;max-width:440px;border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));max-height:88vh;overflow:auto;color:var(--ink)}
+.box{background:var(--card);width:100%;max-width:400px;border-radius:22px;padding:18px;max-height:85vh;overflow:auto;color:var(--ink);box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.box.sm{max-width:300px;text-align:center}
+.big{font-size:44px;font-weight:700;color:var(--pri);margin:6px 0}
+.yn{display:flex;gap:10px;margin-top:14px}
+.yn .btn{flex:1;padding:12px;font-size:16px}
+.yn .y{background:var(--pri);color:#fff}
 .box h2{display:flex;justify-content:space-between;align-items:center;font-size:17px;margin-bottom:8px}
 .ug{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .ug .btn{padding:14px;font-size:16px}
@@ -108,11 +113,12 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
   <div class="ug" id="ug"></div>
 </div></div>
 
+<div class="ov" id="aov"><div class="box sm"><h2 style="justify-content:center">إضافة</h2><div class="big" id="abig">0</div><div class="sub" style="margin:0">صلاة على النبي ﷺ</div><div class="yn"><button class="btn y" id="ayes">نعم</button><button class="btn" id="ano">لا</button></div></div></div>
 <div class="ov" id="sov"><div class="box">
   <h2>الإعدادات <button class="ib" data-close="sov">✕</button></h2>
   <div class="set"><span>الهدف اليومي</span><input type="number" id="target" min="1" max="1000000"></div>
-  <div class="set"><span>أزرار المضاعفات</span><div class="ms" id="mset"></div></div>
-  <div class="set"><span>سرعة المؤقت (صلوات في الدقيقة)</span><input type="number" id="rate" min="1" max="1000"></div>
+  
+  <div class="set"><span>عدد الصلوات في الدقيقة (للمؤقت والأزرار)</span><input type="number" id="rate" min="1" max="1000"></div>
   <hr>
   <div class="row"><button class="btn" id="bk">💾 حفظ نسخة احتياطية</button><button class="btn" id="rs">📥 استرجاع نسخة</button></div>
   <div class="row" style="margin-top:8px"><button class="btn" id="cp">📋 نسخ كنص</button><button class="btn" id="pt">📝 استرجاع من نص</button></div>
@@ -134,9 +140,9 @@ var sd=null;try{var se=document.getElementById('seed');if(se&&se.textContent.tri
 function tot(o){var t=0;if(o&&o.counts)for(var k in o.counts)t+=o.counts[k];return t}
 if(sd&&sd.counts&&(!S||!S.counts||tot(sd)>tot(S))){S=sd;S.timer=null}
 if(!S||!S.counts){S={start:today(),target:100,counts:{}}}
-if(!(S.target>0))S.target=100;
-if(!S.mult||S.mult.length!==4)S.mult=[25,125,250,500];
-if(!(S.rate>0))S.rate=60;
+if(!S.tset||!(S.target>0))S.target=1000;
+
+if(!S.rset||!(S.rate>0))S.rate=25;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function ar(n){return String(n).replace(/\d/g,function(d){return '٠١٢٣٤٥٦٧٨٩'[d]})}
 function get(d){return S.counts[d]||0}
@@ -165,20 +171,20 @@ function theme(){
 $('th').onclick=function(){S.theme=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';save();theme()};
 
 function drawM(){
-  var h='';S.mult.forEach(function(n,i){h+='<button class="btn" data-n="'+n+'">+'+ar(n)+'</button>'});
+  var M=[1,5,10,20].map(function(x){return S.rate*x}),h='';M.forEach(function(n){h+='<button class="btn" data-n="'+n+'">+'+ar(n)+'</button>'});
   h+='<button class="btn" id="undo">↩ تراجع</button>';
   $('mcol').innerHTML=h;
   Array.prototype.forEach.call($('mcol').querySelectorAll('[data-n]'),function(b){b.onclick=function(){bump(+b.getAttribute('data-n'))}});
   $('undo').onclick=function(){
     var u='<button class="btn" data-u="1">−'+ar(1)+'</button>';
-    S.mult.forEach(function(n){u+='<button class="btn" data-u="'+n+'">−'+ar(n)+'</button>'});
+    M.forEach(function(n){u+='<button class="btn" data-u="'+n+'">−'+ar(n)+'</button>'});
     $('ug').innerHTML=u;
     Array.prototype.forEach.call($('ug').querySelectorAll('[data-u]'),function(b){b.onclick=function(){bump(-(+b.getAttribute('data-u')));$('uov').classList.remove('on')}});
     $('uov').classList.add('on');
   };
-  var s='';S.mult.forEach(function(n,i){s+='<input type="number" min="1" data-m="'+i+'" value="'+n+'">'});
-  $('mset').innerHTML=s;
-  Array.prototype.forEach.call($('mset').querySelectorAll('[data-m]'),function(inp){inp.onchange=function(){var v=parseInt(inp.value,10);if(v>0){S.mult[+inp.getAttribute('data-m')]=v;save()}drawM()}});
+  
+  
+  
 }
 
 function render(){
@@ -211,12 +217,12 @@ function bump(k){
   render();
 }
 $('tap').onclick=function(){bump(1)};
-$('target').onchange=function(){var v=parseInt(this.value,10);if(v>0){S.target=v;save()}render()};
-$('rate').onchange=function(){var v=parseInt(this.value,10);if(v>0){S.rate=v;save()}render()};
+$('target').onchange=function(){var v=parseInt(this.value,10);if(v>0){S.target=v;S.tset=true;save()}render()};
+$('rate').onchange=function(){var v=parseInt(this.value,10);if(v>0){S.rate=v;S.rset=true;save();drawM()}render()};
 $('reset').onclick=function(){if(confirm('سيتم مسح كل العدّادات. متأكد؟')){S.counts={};S.timer=null;save();render();tick()}};
 $('gear').onclick=function(){$('sov').classList.add('on')};
 Array.prototype.forEach.call(document.querySelectorAll('[data-close]'),function(b){b.onclick=function(){$(b.getAttribute('data-close')).classList.remove('on')}});
-Array.prototype.forEach.call(document.querySelectorAll('.ov'),function(o){o.onclick=function(e){if(e.target===o)o.classList.remove('on')}});
+Array.prototype.forEach.call(document.querySelectorAll('.ov:not(#aov)'),function(o){o.onclick=function(e){if(e.target===o)o.classList.remove('on')}});
 document.addEventListener('visibilitychange',function(){if(!document.hidden){render();tick()}});
 ['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,function(e){e.preventDefault()})});
 
@@ -231,15 +237,18 @@ function tick(){
 }
 $('tm').onclick=function(){
   if(!S.timer){S.timer=Date.now();save();tick();say('بدأ المؤقت — يمكنك إنزال التطبيق');return}
-  var n=Math.round((Date.now()-S.timer)/60000*S.rate);
+  var n=Math.round((Date.now()-S.timer)/60000*S.rate);if(n>0){pend=n;$('abig').textContent=ar(n);$('aov').classList.add('on');return}
   S.timer=null;save();tick();
   if(n>0){bump(n);say('أُضيفت '+ar(n)+' صلاة ﷺ')}else say('المدة قصيرة، لم تُضف صلوات');
 };
+var pend=0;
+$('ayes').onclick=function(){$('aov').classList.remove('on');S.timer=null;save();tick();if(pend>0){bump(pend);say('أُضيفت '+ar(pend)+' صلاة ﷺ')}pend=0};
+$('ano').onclick=function(){$('aov').classList.remove('on');S.timer=null;save();tick();pend=0;say('تم الإلغاء')};
 setInterval(tick,500);
 
-var VER='2026-11-11.4';
+var VER='2026-11-11.5';
 $('ver').textContent='الإصدار '+VER;
-function backupText(){return JSON.stringify({app:'salawat-wird',v:2,exported:new Date().toISOString(),target:S.target,mult:S.mult,rate:S.rate,counts:S.counts})}
+function backupText(){return JSON.stringify({app:'salawat-wird',v:2,exported:new Date().toISOString(),target:S.target,rate:S.rate,counts:S.counts})}
 $('bk').onclick=function(){
 var txt=backupText(),name='salawat-backup-'+today()+'.json',file;
 try{file=new File([txt],name,{type:'application/json'})}catch(e){file=null}
@@ -250,9 +259,9 @@ var o;try{o=JSON.parse(txt)}catch(e){say('النسخة غير صالحة');retur
 if(!o||o.app!=='salawat-wird'||!o.counts||typeof o.counts!=='object'){say('النسخة غير صالحة');return}
 var added=0,k,v;
 for(k in o.counts){v=+o.counts[k];if(/^\d{4}-\d\d-\d\d$/.test(k)&&v>0&&v>get(k)){S.counts[k]=v;added++}}
-if(o.target>0)S.target=o.target;
-if(o.rate>0)S.rate=o.rate;
-if(o.mult&&o.mult.length===4&&o.mult.every(function(x){return x>0}))S.mult=o.mult;
+if(o.target>0){S.target=o.target;S.tset=true}
+if(o.rate>0){S.rate=o.rate;S.rset=true}
+
 save();drawM();render();say('تم الاسترجاع ✅ ('+ar(added)+' يوم)')}
 $('rs').onclick=function(){$('rf').click()};
 $('rf').onchange=function(){var f=this.files&&this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){restore(String(r.result))};r.readAsText(f);this.value=''};
