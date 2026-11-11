@@ -13,17 +13,19 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 :root[data-theme="dark"]{--bg:#0e1a18;--card:#162623;--ink:#e8f1ee;--mut:#8fa6a0;--pri:#14b8a6;--pri2:#5eead4;--gold:#e5b653;--line:#24403a;--cell:#1c312d;color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",system-ui,sans-serif;min-height:100vh;display:flex;justify-content:center;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",system-ui,sans-serif;display:flex;justify-content:center;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input{-webkit-user-select:text;user-select:text}
-.app{width:100%;max-width:440px;padding:12px 14px 32px}
+.app{width:100%;max-width:440px;padding:10px 14px;display:flex;flex-direction:column;height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:hidden}
 .hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .hd h1{font-size:18px;margin:0;text-align:center;flex:1}
 .ib{width:42px;height:42px;border-radius:50%;border:0;background:var(--cell);font-size:20px;cursor:pointer;color:var(--ink)}
-.sub{text-align:center;color:var(--mut);font-size:13px;margin:6px 0 12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px}
-.dua{font-size:20px;line-height:1.8;text-align:center;color:var(--pri);font-weight:600}
-.main{display:grid;grid-template-columns:64px 1fr 64px;gap:8px;align-items:stretch;margin-top:10px}
-.ring{position:relative;aspect-ratio:1;width:100%}
+.sub{text-align:center;color:var(--mut);font-size:13px;margin:4px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:12px;margin-bottom:10px;flex:none}
+.gc{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;margin-bottom:0}
+#pov{z-index:30}
+.dua{font-size:18px;line-height:1.5;text-align:center;color:var(--pri);font-weight:600}
+.main{display:grid;grid-template-columns:64px 1fr 64px;gap:8px;align-items:stretch;margin-top:6px}
+.ring{position:relative;aspect-ratio:1;width:100%;max-width:34vh;max-width:34dvh;margin:0 auto}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:14;stroke-linecap:round}
 .bg{stroke:var(--cell)}
@@ -40,12 +42,12 @@ input{-webkit-user-select:text;user-select:text}
 .tm.on{background:var(--gold);color:#fff}
 .tm small{font-size:11px;font-weight:400;opacity:.9}
 .row{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap}
-.msg{text-align:center;min-height:22px;color:var(--gold);font-weight:600;margin-top:8px}
+.msg{text-align:center;min-height:20px;color:var(--gold);font-weight:600;margin-top:4px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
-.stats div{background:var(--cell);border-radius:14px;padding:10px 4px}
-.stats b{display:block;font-size:22px;color:var(--pri)}
+.stats div{background:var(--cell);border-radius:14px;padding:6px 4px}
+.stats b{display:block;font-size:18px;color:var(--pri)}
 .stats span{font-size:12px;color:var(--mut)}
-.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px;overflow-y:auto;flex:1;min-height:0;align-content:start;padding-bottom:4px;-webkit-overflow-scrolling:touch}
 .c{aspect-ratio:1;border-radius:12px;background:var(--cell);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;color:var(--mut);line-height:1.25}
 .c small{font-size:10px;min-height:12px}
 .c.ok{background:var(--pri);color:#fff;font-weight:700}
@@ -101,7 +103,7 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
     <div><b id="sTotal">0</b><span>صلوات هذا الشهر</span></div>
   </div>
 
-  <div class="card">
+  <div class="card gc">
     <h2 id="gTitle">أيام الشهر الهجري</h2>
     <div class="grid" id="grid"></div>
     <div class="fin" id="fin">🌙 ما شاء الله، أتممت أيام الشهر كلها! تقبّل الله منك.</div>
@@ -113,9 +115,11 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
   <div class="ug" id="ug"></div>
 </div></div>
 
+<div class="ov" id="pov"><div class="box sm"><h2 style="justify-content:center" id="ptitle"></h2><input type="password" inputmode="numeric" autocomplete="off" id="pin" maxlength="12" style="width:100%;font-size:22px;text-align:center;letter-spacing:6px;background:var(--cell);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:10px;margin-top:6px;font-family:inherit"><div class="sub" id="perr" style="margin:8px 0 0;color:#d33;min-height:18px"></div><div class="yn"><button class="btn y" id="pgo">تأكيد</button><button class="btn" id="pno">إلغاء</button></div></div></div>
 <div class="ov" id="aov"><div class="box sm"><h2 style="justify-content:center">إضافة</h2><div class="big" id="abig">0</div><div class="sub" style="margin:0">صلاة على النبي ﷺ</div><div class="yn"><button class="btn y" id="ayes">نعم</button><button class="btn" id="ano">لا</button></div></div></div>
 <div class="ov" id="sov"><div class="box">
   <h2>الإعدادات <button class="ib" data-close="sov">✕</button></h2>
+  <div class="set"><span>الرقم السري</span><span class="ms"><button class="btn" id="pinb">تعيين</button><button class="link" id="pinx" style="display:none">إزالة</button></span></div>
   <div class="set"><span>الهدف اليومي</span><input type="number" id="target" min="1" max="1000000"></div>
   
   <div class="set"><span>عدد الصلوات في الدقيقة (للمؤقت والأزرار)</span><input type="number" id="rate" min="1" max="1000"></div>
@@ -219,10 +223,10 @@ function bump(k){
 $('tap').onclick=function(){bump(1)};
 $('target').onchange=function(){var v=parseInt(this.value,10);if(v>0){S.target=v;S.tset=true;save()}render()};
 $('rate').onchange=function(){var v=parseInt(this.value,10);if(v>0){S.rate=v;S.rset=true;save();drawM()}render()};
-$('reset').onclick=function(){if(confirm('سيتم مسح كل العدّادات. متأكد؟')){S.counts={};S.timer=null;save();render();tick()}};
-$('gear').onclick=function(){$('sov').classList.add('on')};
+$('reset').onclick=function(){var go=function(){if(confirm('سيتم مسح كل العدّادات. متأكد؟')){S.counts={};S.timer=null;save();render();tick();$('sov').classList.remove('on')}};if(S.pin)pinModal('الرقم السري لمسح العدّادات',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},go);else go()};
+$('gear').onclick=function(){var o=function(){$('sov').classList.add('on')};if(S.pin)pinModal('الرقم السري للإعدادات',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},o);else o()};
 Array.prototype.forEach.call(document.querySelectorAll('[data-close]'),function(b){b.onclick=function(){$(b.getAttribute('data-close')).classList.remove('on')}});
-Array.prototype.forEach.call(document.querySelectorAll('.ov:not(#aov)'),function(o){o.onclick=function(e){if(e.target===o)o.classList.remove('on')}});
+Array.prototype.forEach.call(document.querySelectorAll('.ov:not(#aov):not(#pov)'),function(o){o.onclick=function(e){if(e.target===o)o.classList.remove('on')}});
 document.addEventListener('visibilitychange',function(){if(!document.hidden){render();tick()}});
 ['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,function(e){e.preventDefault()})});
 
@@ -246,7 +250,18 @@ $('ayes').onclick=function(){$('aov').classList.remove('on');S.timer=null;save()
 $('ano').onclick=function(){$('aov').classList.remove('on');S.timer=null;save();tick();pend=0;say('تم الإلغاء')};
 setInterval(tick,500);
 
-var VER='2026-11-11.5';
+function nd(s){return s.replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)})}
+function hp2(s){var x=5381,i;s='sw'+nd(s);for(i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return 'p'+x}
+var pcb=null;
+function pinModal(title,check,ok){$('ptitle').textContent=title;$('pin').value='';$('perr').textContent='';$('pov').classList.add('on');pcb={check:check,ok:ok};setTimeout(function(){try{$('pin').focus()}catch(e){}},50)}
+$('pgo').onclick=function(){if(!pcb)return;var v=nd($('pin').value),e=pcb.check(v);if(e){$('perr').textContent=e;$('pin').value='';return}var f=pcb.ok;pcb=null;$('pov').classList.remove('on');f(v)};
+$('pno').onclick=function(){pcb=null;$('pov').classList.remove('on')};
+$('pin').onkeydown=function(e){if(e.key==='Enter')$('pgo').onclick()};
+function pinUi(){$('pinb').textContent=S.pin?'تغيير':'تعيين';$('pinx').style.display=S.pin?'':'none'}
+function newPin(){pinModal('رقم سري جديد (٤ أرقام على الأقل)',function(v){return /^\d{4,12}$/.test(v)?null:'اكتب ٤ أرقام على الأقل'},function(a){pinModal('أعد كتابة الرقم',function(v){return v===a?null:'الرقمان غير متطابقين'},function(){S.pin=hp2(a);save();pinUi();say('تم حفظ الرقم السري ✅')})})}
+$('pinb').onclick=function(){if(S.pin)pinModal('الرقم السري الحالي',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},newPin);else newPin()};
+$('pinx').onclick=function(){pinModal('الرقم السري الحالي',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},function(){delete S.pin;save();pinUi();say('تمت إزالة الرقم السري')})};
+var VER='2026-11-11.6';
 $('ver').textContent='الإصدار '+VER;
 function backupText(){return JSON.stringify({app:'salawat-wird',v:2,exported:new Date().toISOString(),target:S.target,rate:S.rate,counts:S.counts})}
 $('bk').onclick=function(){
@@ -301,7 +316,7 @@ try{
   var man={name:'ورد الصلاة على النبي',short_name:'ورد الصلاة',lang:'ar',dir:'rtl',display:'standalone',background_color:'#f6f3ea',theme_color:'#0f766e',start_url:'.',icons:[{src:icon,sizes:'512x512',type:'image/svg+xml',purpose:'any'}]};
   var m=document.createElement('link');m.rel='manifest';m.href='data:application/manifest+json;charset=utf-8,'+encodeURIComponent(JSON.stringify(man));document.head.appendChild(m);
 }catch(e){}
-theme();drawM();render();tick();
+theme();drawM();render();tick();pinUi();
 })();
 </script>
 </body>
