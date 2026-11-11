@@ -10,6 +10,17 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>ورد الصلاة على النبي ﷺ</title>
+<meta name="description" content="عدّاد يومي للصلاة على النبي ﷺ خلال الشهر الهجري: عدّ بالضغط، مؤقت يعمل في الخلفية، متابعة أيام الشهر، ونسخ احتياطي. مجاني وبدون حساب.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://khidry.github.io/Sala/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ورد الصلاة على النبي ﷺ">
+<meta property="og:url" content="https://khidry.github.io/Sala/">
+<meta property="og:image" content="https://khidry.github.io/Sala/icon-512.png">
+<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:title" content="ورد الصلاة على النبي ﷺ">
+<meta property="og:description" content="عدّاد يومي للصلاة على النبي ﷺ ومتابعة الشهر الهجري، مجاني وبدون حساب.">
 <style>
 :root{--bg:#f6f3ea;--card:#fff;--ink:#16302b;--mut:#6b7f7a;--pri:#0f766e;--pri2:#14b8a6;--gold:#c8962e;--line:#e3ded0;--cell:#efeadb;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -78,6 +89,18 @@ input[type=number]{font-size:16px;width:80px;background:var(--cell);border:1px s
 .ug{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .ug .btn{padding:14px;font-size:16px}
 hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+.sec{background:var(--cell);border-radius:16px;padding:12px 12px 14px;margin-top:12px}
+.sec h3{margin:0 0 6px;font-size:14px;color:var(--pri)}
+.sec .btn,.sec input[type=number]{background:var(--card)}
+.lk{display:inline-block;background:var(--card);color:var(--ink);border-radius:12px;padding:9px 14px;font-size:14px;text-decoration:none}
+#hov{z-index:25}
+.help{font-size:14px;line-height:1.9;text-align:right;-webkit-user-select:text;user-select:text}
+.help h3{margin:14px 0 4px;font-size:15px;color:var(--pri)}
+.help p{margin:4px 0}
+.help ul{margin:4px 0;padding:0 18px 0 0}
+.help li{margin:4px 0}
+.foot{flex:none;text-align:center;font-size:11px;color:var(--mut);padding-top:4px}
+.foot a{color:var(--mut)}
 </style>
 </head>
 <body>
@@ -85,7 +108,7 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
   <div class="hd">
     <button class="ib" id="gear" aria-label="الإعدادات">⚙️</button>
     <h1>ورد الصلاة على النبي ﷺ</h1>
-    <button class="ib" id="th" aria-label="الثيم">🌙</button>
+    <button class="ib" id="share" aria-label="مشاركة التطبيق">📤</button>
   </div>
   <div class="sub" id="dayLbl"></div>
 
@@ -113,6 +136,7 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
     <div class="grid" id="grid"></div>
     <div class="fin" id="fin">🌙 ما شاء الله، أتممت أيام الشهر كلها! تقبّل الله منك.</div>
   </div>
+  <div class="foot"><a href="privacy.html">سياسة الخصوصية</a> · <a href="terms.html">شروط الاستخدام</a></div>
 </div>
 
 <div class="ov" id="uov"><div class="box">
@@ -124,18 +148,85 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
 <div class="ov" id="aov"><div class="box sm"><h2 style="justify-content:center">إضافة</h2><div class="big" id="abig">0</div><div class="sub" style="margin:0">صلاة على النبي ﷺ</div><div class="yn"><button class="btn y" id="ayes">نعم</button><button class="btn" id="ano">لا</button></div></div></div>
 <div class="ov" id="sov"><div class="box">
   <h2>الإعدادات <button class="ib" data-close="sov">✕</button></h2>
-  <div class="set"><span>الرقم السري</span><span class="ms"><button class="btn" id="pinb">تعيين</button><button class="link" id="pinx" style="display:none">إزالة</button></span></div>
-  <div class="set"><span>الهدف اليومي</span><input type="number" id="target" min="1" max="1000000"></div>
-  
-  <div class="set"><span>عدد الصلوات في الدقيقة (للمؤقت والأزرار)</span><input type="number" id="rate" min="1" max="1000"></div>
-  <hr>
-  <div class="row"><button class="btn" id="bk">💾 حفظ نسخة احتياطية</button><button class="btn" id="rs">📥 استرجاع نسخة</button></div>
-  <div class="row" style="margin-top:8px"><button class="btn" id="cp">📋 نسخ كنص</button><button class="btn" id="pt">📝 استرجاع من نص</button></div>
-  <input type="file" id="rf" accept=".json,application/json,text/plain" style="display:none">
-  <hr>
-  <div class="row"><button class="btn" id="upd">🔄 تحديث التطبيق</button><button class="btn" id="share">📤 مشاركة التطبيق</button></div>
-  <div class="sub" id="ver" style="margin:10px 0 0"></div>
-  <div class="row" style="margin-top:8px"><button class="link" id="reset">مسح كل العدّادات</button></div>
+
+  <div class="sec"><h3>⚙️ الضبط</h3>
+    <div class="set"><span>الرقم السري</span><span class="ms"><button class="btn" id="pinb">تعيين</button><button class="link" id="pinx" style="display:none">إزالة</button></span></div>
+    <div class="set"><span>الهدف اليومي</span><input type="number" id="target" min="1" max="1000000"></div>
+    <div class="set"><span>عدد الصلوات في الدقيقة (للمؤقت والأزرار)</span><input type="number" id="rate" min="1" max="1000"></div>
+    <div class="set"><span>المظهر</span><button class="btn" id="th">🌙 الوضع الليلي</button></div>
+  </div>
+
+  <div class="sec"><h3>💾 النسخ الاحتياطي</h3>
+    <div class="row"><button class="btn" id="bk">💾 حفظ نسخة</button><button class="btn" id="rs">📥 استرجاع نسخة</button></div>
+    <input type="file" id="rf" accept=".json,application/json,text/plain" style="display:none">
+    <div class="row" style="margin-top:12px"><button class="link" id="reset">مسح كل العدّادات</button></div>
+  </div>
+
+  <div class="sec"><h3>📖 المساعدة والصفحات</h3>
+    <div class="row"><button class="btn" id="helpb">📖 طريقة الاستخدام</button><button class="btn" id="upd">🔄 تحديث التطبيق</button></div>
+    <div class="row" style="margin-top:10px"><a class="lk" href="privacy.html">سياسة الخصوصية</a><a class="lk" href="terms.html">شروط الاستخدام</a></div>
+    <div class="sub" id="ver" style="margin:10px 0 0"></div>
+  </div>
+</div></div>
+
+<div class="ov" id="hov"><div class="box">
+  <h2>طريقة الاستخدام <button class="ib" data-close="hov">✕</button></h2>
+  <div class="help">
+    <p>أهلًا بك في <b>ورد الصلاة على النبي ﷺ</b>. هو عدّاد يومي يساعدك على المداومة على الصلاة على النبي ﷺ طوال الشهر الهجري، ويحفظ تقدّمك يومًا بيوم على جهازك.</p>
+
+    <h3>١) العدّ</h3>
+    <ul>
+      <li><b>الدايرة الكبيرة في المنتصف:</b> كل ضغطة عليها تساوي صلاة واحدة. الرقم داخلها هو عدد صلواتك اليوم، وتحته هدفك اليومي. الحلقة حولها تمتلئ كلما اقتربت من الهدف، فإذا وصلت إليه تتحوّل للذهبي وتظهر رسالة تهنئة.</li>
+      <li><b>الأزرار العمودية على شمال الدايرة:</b> للإضافة السريعة. الأول يساوي صلوات دقيقة واحدة بسرعتك، والثاني ٥ دقائق، والثالث ١٠ دقائق، والرابع ٢٠ دقيقة. أرقامها مرتبطة بإعداد «عدد الصلوات في الدقيقة»، فإذا غيّرته تتغيّر الأزرار تلقائيًا. مفيدة لو صلّيت على النبي ﷺ بلسانك من غير ضغط وتريد إضافة ما قلته.</li>
+      <li><b>زر ↩ تراجع:</b> لتصحيح الخطأ. يفتح نافذة فيها خمسة اختيارات: −١ ثم أربع قيم بنفس قيم الأزرار. اضغط الاختيار فيُنقَص من عدّاد اليوم، ولا ينزل العدّاد عن صفر.</li>
+    </ul>
+
+    <h3>٢) المؤقت (على يمين الدايرة)</h3>
+    <ul>
+      <li>اضغط زر ⏱ ليبدأ العدّ بالدقائق والثواني، وبجانبها عدد الصلوات المتوقّع حتى الآن.</li>
+      <li>يمكنك الخروج من التطبيق أو قفل الشاشة ووضع الهاتف في جيبك وأنت تصلّي على النبي ﷺ؛ المؤقت يحسب من وقت البداية المحفوظ، فلا يتوقف.</li>
+      <li>عندما ترجع اضغط الزر نفسه (مكتوب عليه «إيقاف»). تظهر نافذة صغيرة بكلمة «إضافة» وتحتها العدد الناتج (المدة × سرعتك). اختر <b>نعم</b> لإضافته للعدّاد، أو <b>لا</b> للإلغاء وتجاهل هذه المدة. لا تُغلق النافذة إلا بأحد الاختيارين.</li>
+      <li>الحساب تقريبي ويعتمد على السرعة التي ضبطتها في الإعدادات، فاجعلها قريبة من سرعتك الفعلية.</li>
+    </ul>
+
+    <h3>٣) الإحصائيات وأيام الشهر</h3>
+    <ul>
+      <li><b>أيام متتالية:</b> عدد الأيام المتصلة التي بلغت فيها هدفك. <b>أيام مكتملة:</b> أيام الشهر الهجري الحالي التي بلغت هدفها. <b>صلوات هذا الشهر:</b> مجموع صلوات الشهر الهجري الحالي.</li>
+      <li>المربع السفلي يعرض أيام الشهر الهجري الحالي (٢٩ أو ٣٠ يومًا بتقويم أم القرى) وتحت كل رقم عدد صلواتك فيه، والأعداد الكبيرة تُختصر مثل ١٢٫٥ك. مرّر داخله لرؤية بقية الأيام.</li>
+      <li>الألوان: أخضر غامق = يوم مكتمل، أخضر فاتح = بدأت ولم تكتمل، باهت = يوم مضى بلا صلوات، إطار ذهبي = اليوم، شفاف = أيام قادمة.</li>
+      <li>مع بداية كل شهر هجري جديد يبدأ الجدول من جديد تلقائيًا، وتبقى بيانات الأشهر السابقة محفوظة وتدخل في النسخة الاحتياطية.</li>
+    </ul>
+
+    <h3>٤) الإعدادات (زر ⚙️ أعلى اليمين)</h3>
+    <ul>
+      <li><b>قسم الضبط:</b></li>
+      <li>— <b>الرقم السري:</b> اضغط «تعيين» واكتب ٤ أرقام على الأقل مرتين. بعدها يُطلب الرقم عند فتح الإعدادات وعند مسح العدّادات. تقدر تغيّره أو تزيله من نفس المكان. هو قفل بسيط يمنع التغيير بالخطأ، وإذا نسيته فلا توجد طريقة لتجاوزه إلا بمسح بيانات الموقع من المتصفح (وهذا يحذف عدّادك).</li>
+      <li>— <b>الهدف اليومي:</b> عدد الصلوات الذي تعتبر عنده اليوم مكتملًا (الافتراضي ١٠٠٠).</li>
+      <li>— <b>عدد الصلوات في الدقيقة:</b> سرعتك (الافتراضي ٢٥). يحدد حساب المؤقت وقيم الأزرار الأربعة.</li>
+      <li>— <b>المظهر:</b> للتبديل بين الوضع الليلي والنهاري.</li>
+    </ul>
+
+    <h3>٥) النسخ الاحتياطي</h3>
+    <ul>
+      <li><b>حفظ نسخة:</b> يُنشئ ملفًا بصيغة JSON فيه عدّاداتك وإعداداتك. اختر من قائمة المشاركة واتساب (أرسله لنفسك) أو احفظه في الملفات.</li>
+      <li><b>استرجاع نسخة:</b> اختر ملف النسخة. الاسترجاع يدمج ولا يمسح: لكل يوم يُبقي الرقم الأكبر بين الموجود والمُسترجَع، ويسترجع الهدف والسرعة أيضًا. الرقم السري لا يُحفظ في النسخة.</li>
+      <li><b>مسح كل العدّادات:</b> يحذف عدّادات كل الأيام. يطلب الرقم السري إن كان مضبوطًا ثم رسالة تأكيد. احفظ نسخة قبله دائمًا.</li>
+      <li>نصيحة: احفظ نسخة احتياطية كل أسبوع تقريبًا، فمسح بيانات المتصفح أو حذف الموقع يمسح التقدّم.</li>
+    </ul>
+
+    <h3>٦) المشاركة والتحديث والتثبيت</h3>
+    <ul>
+      <li><b>زر 📤 أعلى اليسار:</b> يشارك رابط التطبيق مع من تحب.</li>
+      <li><b>التحديث:</b> يتحقق التطبيق من وجود إصدار أحدث عند فتحه، وإذا وُجد يظهر تنبيه. من الإعدادات اضغط «تحديث التطبيق». رقم إصدارك يظهر أسفل القسم.</li>
+      <li><b>التثبيت على أندرويد:</b> افتح الرابط في كروم ثم ⋮ ← تثبيت التطبيق. <b>على الآيفون:</b> افتحه في سفاري ثم المشاركة ← إضافة إلى الشاشة الرئيسية.</li>
+      <li>بياناتك محفوظة على جهازك فقط ولا تنتقل بين الأجهزة، وعلى الآيفون قد يحتفظ كل من الأيقونة وسفاري ببيانات منفصلة، فاستخدم واحدًا منهما أو انقل بياناتك بنسخة احتياطية.</li>
+    </ul>
+
+    <h3>٧) الصفحات</h3>
+    <p>في آخر قسم الإعدادات (وأسفل الشاشة الرئيسية) روابط <b>سياسة الخصوصية</b> و<b>شروط الاستخدام</b>. وتجد هذه الشاشة دائمًا في الإعدادات ← طريقة الاستخدام.</p>
+    <p>تقبّل الله منك، وجعله في ميزان حسناتك. ﷺ</p>
+  </div>
+  <div class="yn"><button class="btn y" id="hgo">فهمت ✓</button></div>
 </div></div>
 
 <script>
@@ -174,7 +265,7 @@ function say(t){$('msg').textContent=t;clearTimeout(msgT);msgT=setTimeout(functi
 function theme(){
   var t=S.theme||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');
   document.documentElement.setAttribute('data-theme',t);
-  $('th').textContent=t==='dark'?'☀️':'🌙';
+  $('th').textContent=t==='dark'?'☀️ الوضع النهاري':'🌙 الوضع الليلي';
   var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#0e1a18':'#0f766e';
 }
 $('th').onclick=function(){S.theme=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';save();theme()};
@@ -266,7 +357,7 @@ function pinUi(){$('pinb').textContent=S.pin?'تغيير':'تعيين';$('pinx')
 function newPin(){pinModal('رقم سري جديد (٤ أرقام على الأقل)',function(v){return /^\d{4,12}$/.test(v)?null:'اكتب ٤ أرقام على الأقل'},function(a){pinModal('أعد كتابة الرقم',function(v){return v===a?null:'الرقمان غير متطابقين'},function(){S.pin=hp2(a);save();pinUi();say('تم حفظ الرقم السري ✅')})})}
 $('pinb').onclick=function(){if(S.pin)pinModal('الرقم السري الحالي',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},newPin);else newPin()};
 $('pinx').onclick=function(){pinModal('الرقم السري الحالي',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},function(){delete S.pin;save();pinUi();say('تمت إزالة الرقم السري')})};
-var VER='2026-11-11.11';
+var VER='2026-11-11.13';
 $('ver').textContent='الإصدار '+VER;
 function backupText(){return JSON.stringify({app:'salawat-wird',v:2,exported:new Date().toISOString(),target:S.target,rate:S.rate,counts:S.counts})}
 $('bk').onclick=function(){
@@ -285,9 +376,6 @@ if(o.rate>0){S.rate=o.rate;S.rset=true}
 save();drawM();render();say('تم الاسترجاع ✅ ('+ar(added)+' يوم)')}
 $('rs').onclick=function(){$('rf').click()};
 $('rf').onchange=function(){var f=this.files&&this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){restore(String(r.result))};r.readAsText(f);this.value=''};
-$('cp').onclick=function(){var t=backupText();
-if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){say('تم النسخ — الصقه في واتساب لنفسك')},function(){window.prompt('انسخ النص:',t)})}else window.prompt('انسخ النص:',t)};
-$('pt').onclick=function(){var t=window.prompt('الصق نص النسخة هنا');if(t)restore(t)};
 
 
 function build(){var c=document.documentElement.cloneNode(true);
@@ -296,12 +384,21 @@ var o=c.querySelector('#seed');if(o)o.parentNode.removeChild(o);
 var s=document.createElement('script');s.id='seed';s.type='application/json';s.textContent=JSON.stringify(S).replace(/</g,'\\u003c');
 var b=c.querySelector('body');b.insertBefore(s,b.firstChild);
 return '<!DOCTYPE html>'+c.outerHTML}
-$('share').onclick=function(){
+function shareFile(){
 var html=build(),name='index.html',file;
 try{file=new File([html],name,{type:'text/html'})}catch(e){file=null}
 var fb=function(){try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);say('تم تجهيز الملف للحفظ')}catch(e){say('المشاركة غير متاحة هنا')}};
 if(file&&navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'ورد الصلاة على النبي'}).catch(function(e){if(!e||e.name!=='AbortError')fb()})}else fb()};
 
+$('share').onclick=function(){
+var web=/^https?:/.test(location.protocol),u=location.href.split('?')[0].split('#')[0];
+if(web&&navigator.share){navigator.share({title:'ورد الصلاة على النبي ﷺ',text:'تطبيق لمتابعة ورد الصلاة على النبي ﷺ يوميًا خلال الشهر الهجري',url:u}).catch(function(){});return}
+if(web&&navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){say('تم نسخ رابط التطبيق')},function(){shareFile()});return}
+shareFile()};
+function showHelp(){$('hov').classList.add('on');var b=document.querySelector('#hov .box');if(b)b.scrollTop=0}
+$('helpb').onclick=showHelp;
+$('hgo').onclick=function(){$('hov').classList.remove('on')};
+try{if(!localStorage.getItem('salawat-help-seen')){localStorage.setItem('salawat-help-seen','1');setTimeout(showHelp,600)}}catch(e){}
 function check(manual){
 if(!/^https?:/.test(location.protocol)){if(manual)say('التحديث متاح من الرابط فقط');return}
 var base=location.href.split('?')[0].split('#')[0];
