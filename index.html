@@ -8,7 +8,7 @@
 <style>
 :root{--bg:#f6f3ea;--card:#fff;--ink:#16302b;--mut:#6b7f7a;--pri:#0f766e;--pri2:#14b8a6;--gold:#c8962e;--line:#e3ded0;--cell:#efeadb;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a18;--card:#16262.3;--card:#162623;--ink:#e8f1ee;--mut:#8fa6a0;--pri:#14b8a6;--pri2:#5eead4;--gold:#e5b653;--line:#24403a;--cell:#1c312d;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a18;--card:#162623;--ink:#e8f1ee;--mut:#8fa6a0;--pri:#14b8a6;--pri2:#5eead4;--gold:#e5b653;--line:#24403a;--cell:#1c312d;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0e1a18;--card:#162623;--ink:#e8f1ee;--mut:#8fa6a0;--pri:#14b8a6;--pri2:#5eead4;--gold:#e5b653;--line:#24403a;--cell:#1c312d;color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
@@ -35,8 +35,9 @@ h1{font-size:20px;margin:4px 0 2px;text-align:center}
 .stats div{background:var(--cell);border-radius:14px;padding:10px 4px}
 .stats b{display:block;font-size:22px;color:var(--pri)}
 .stats span{font-size:12px;color:var(--mut)}
-.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:10px}
-.c{aspect-ratio:1;border-radius:12px;background:var(--cell);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--mut);position:relative}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px}
+.c{aspect-ratio:1;border-radius:12px;background:var(--cell);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;color:var(--mut);line-height:1.25}
+.c small{font-size:10px;min-height:12px}
 .c.ok{background:var(--pri);color:#fff;font-weight:700}
 .c.part{background:color-mix(in srgb,var(--pri) 35%,var(--cell));color:var(--ink)}
 .c.miss{opacity:.55}
@@ -60,27 +61,28 @@ input[type=number]{width:90px;background:var(--cell);border:1px solid var(--line
       <svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="43"/><circle class="fg" id="fg" cx="50" cy="50" r="43" stroke-dasharray="270.18" stroke-dashoffset="270.18"/></svg>
       <button class="tap" id="tap" aria-label="عدّ"><b id="cnt">0</b><small id="of"></small></button>
     </div>
-    <div class="row"><button class="btn" data-n="10">+10</button><button class="btn" data-n="100">+100</button><button class="btn" data-n="1000">+1000</button></div><div class="row" style="margin-top:8px"><button class="btn" id="undo">− تراجع</button></div>
+    <div class="row"><button class="btn" data-n="25">+25</button><button class="btn" data-n="125">+125</button><button class="btn" data-n="250">+250</button><button class="btn" data-n="500">+500</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="undo">− تراجع</button></div>
     <div class="msg" id="msg"></div>
   </div>
 
   <div class="stats card">
     <div><b id="sStreak">0</b><span>أيام متتالية</span></div>
     <div><b id="sDone">0</b><span>أيام مكتملة</span></div>
-    <div><b id="sTotal">0</b><span>إجمالي الصلوات</span></div>
+    <div><b id="sTotal">0</b><span>صلوات هذا الشهر</span></div>
   </div>
 
   <div class="card">
-    <h2>رحلة الثلاثين يومًا</h2>
+    <h2 id="gTitle">أيام الشهر الهجري</h2>
     <div class="grid" id="grid"></div>
-    <div class="fin" id="fin">🌙 ما شاء الله، أتممت الثلاثين يومًا! تقبّل الله منك.</div>
+    <div class="fin" id="fin">🌙 ما شاء الله، أتممت أيام الشهر كلها! تقبّل الله منك.</div>
   </div>
 
   <div class="card">
     <h2>الإعدادات</h2>
-    <div class="set"><span>الهدف اليومي</span><input type="number" id="target" min="1" max="10000"></div>
-    <div class="set"><span>تاريخ البداية</span><input type="date" id="start" style="width:150px"></div>
-    <div class="row" style="margin-top:12px"><button class="btn" id="share">📤 مشاركة التطبيق (مع تقدّمك)</button></div><div class="row" style="margin-top:8px"><button class="link" id="reset">بدء شهر جديد من اليوم</button></div>
+    <div class="set"><span>الهدف اليومي</span><input type="number" id="target" min="1" max="100000"></div>
+    <div class="row" style="margin-top:12px"><button class="btn" id="share">📤 مشاركة التطبيق (مع تقدّمك)</button></div>
+    <div class="row" style="margin-top:8px"><button class="link" id="reset">مسح كل العدّادات</button></div>
   </div>
 </div>
 
@@ -88,48 +90,56 @@ input[type=number]{width:90px;background:var(--cell);border:1px solid var(--line
 (function(){
 var KEY='salawat-wird-v1',$=function(i){return document.getElementById(i)};
 function ymd(d){var m=d.getMonth()+1,x=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(x<10?'0':'')+x}
-function parse(s){var p=s.split('-');return new Date(+p[0],p[1]-1,+p[2])}
 function today(){return ymd(new Date())}
 var S;
 try{S=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){S=null}
 var sd=null;try{var se=document.getElementById('seed');if(se&&se.textContent.trim())sd=JSON.parse(se.textContent)}catch(e){}
 function tot(o){var t=0;if(o&&o.counts)for(var k in o.counts)t+=o.counts[k];return t}
-if(sd&&sd.start&&(!S||!S.start||tot(sd)>tot(S)))S=sd;
-if(!S||!S.start){S={start:today(),target:100,counts:{}}}
+if(sd&&sd.counts&&(!S||!S.counts||tot(sd)>tot(S)))S=sd;
+if(!S||!S.counts){S={start:today(),target:100,counts:{}}}
+if(!(S.target>0))S.target=100;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function ar(n){return String(n).replace(/\d/g,function(d){return '٠١٢٣٤٥٦٧٨٩'[d]})}
-function dayIndex(){return Math.round((parse(today())-parse(S.start))/864e5)}
-function dateAt(i){var d=parse(S.start);d.setDate(d.getDate()+i);return ymd(d)}
 function get(d){return S.counts[d]||0}
+function fmt(n){return n>=10000?ar((n/1000).toFixed(1).replace('.0',''))+'ك':ar(n)}
+function at(d0,i){return new Date(d0.getFullYear(),d0.getMonth(),d0.getDate()+i,12)}
+var HF=null;try{HF=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'})}catch(e){}
+function hp(d){
+  if(HF){try{var o={};HF.formatToParts(d).forEach(function(p){o[p.type]=parseInt(p.value,10)});if(o.day)return o}catch(e){}}
+  return {day:d.getDate(),month:d.getMonth()+1,year:d.getFullYear()};
+}
+function cyc(){
+  var n=new Date(),t=new Date(n.getFullYear(),n.getMonth(),n.getDate(),12),h=hp(t);
+  var st=at(t,-(h.day-1)),N=hp(at(st,29)).day===1?29:30,name='';
+  try{name=new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura',{month:'long'}).format(t)+' '+ar(h.year)+' هـ'}catch(e){}
+  return {t:t,st:st,N:N,idx:h.day-1,name:name};
+}
 var msgT;
 function say(t){$('msg').textContent=t;clearTimeout(msgT);msgT=setTimeout(function(){$('msg').textContent=''},2500)}
 
 function render(){
-  var idx=dayIndex(),t=today(),c=get(t),T=S.target;
-  $('dayLbl').textContent=idx<0?'لم يبدأ الشهر بعد':idx>29?'انتهى الشهر — ابدأ شهرًا جديدًا متى شئت':'اليوم '+ar(idx+1)+' من ٣٠';
+  var C=cyc(),t=today(),c=get(t),T=S.target,N=C.N;
+  $('dayLbl').textContent=(C.name?C.name+' — ':'')+'اليوم '+ar(C.idx+1)+' من '+ar(N);
+  $('gTitle').textContent=C.name?'أيام '+C.name:'أيام الشهر';
   $('cnt').textContent=ar(c);$('of').textContent='من '+ar(T);
-  var p=Math.min(c/T,1);$('fg').style.strokeDashoffset=270.18*(1-p);
+  $('fg').style.strokeDashoffset=270.18*(1-Math.min(c/T,1));
   $('ring').className='ring'+(c>=T?' done':'');
-  var g='',done=0,total=0,streak=0,i;
-  for(i=0;i<30;i++){
-    var d=dateAt(i),n=get(d),cls='c';
+  var g='',done=0,total=0,i;
+  for(i=0;i<N;i++){
+    var d=ymd(at(C.st,i)),n=get(d),cls='c';
     total+=n;
     if(n>=T){cls+=' ok';done++}else if(n>0&&d<=t)cls+=' part';
-    if(d===t)cls+=' today';
-    else if(d>t)cls+=' fut';
-    else if(n===0)cls+=' miss';
-    g+='<div class="'+cls+'">'+ar(i+1)+'</div>';
+    if(d===t)cls+=' today';else if(d>t)cls+=' fut';else if(n===0)cls+=' miss';
+    g+='<div class="'+cls+'"><span>'+ar(i+1)+'</span><small>'+(d<=t?fmt(n):'')+'</small></div>';
   }
   $('grid').innerHTML=g;
-  var s=Math.min(Math.max(idx,0),29);
-  if(get(dateAt(s))<T)s--;
-  for(i=s;i>=0&&get(dateAt(i))>=T;i--)streak++;
-  $('sStreak').textContent=ar(streak);$('sDone').textContent=ar(done);$('sTotal').textContent=ar(total);
-  $('fin').style.display=done>=30?'block':'none';
-  $('target').value=T;$('start').value=S.start;
+  var s=0,j=c>=T?0:1;
+  while(j<400&&get(ymd(at(C.t,-j)))>=T){s++;j++}
+  $('sStreak').textContent=ar(s);$('sDone').textContent=ar(done);$('sTotal').textContent=ar(total);
+  $('fin').style.display=done>=N?'block':'none';
+  $('target').value=T;
 }
 function bump(k){
-  if(dayIndex()<0){say('يبدأ الورد في تاريخ البداية');return}
   var t=today(),before=get(t),after=Math.max(0,before+k);
   S.counts[t]=after;save();
   if(navigator.vibrate&&k>0)try{navigator.vibrate(12)}catch(e){}
@@ -140,8 +150,7 @@ $('tap').onclick=function(){bump(1)};
 Array.prototype.forEach.call(document.querySelectorAll('[data-n]'),function(b){b.onclick=function(){bump(+b.getAttribute('data-n'))}});
 $('undo').onclick=function(){bump(-1)};
 $('target').onchange=function(){var v=parseInt(this.value,10);if(v>0){S.target=v;save()}render()};
-$('start').onchange=function(){if(this.value){S.start=this.value;save()}render()};
-$('reset').onclick=function(){if(confirm('سيتم مسح العدّاد وبدء شهر جديد من اليوم. متأكد؟')){S={start:today(),target:S.target,counts:{}};save();render()}};
+$('reset').onclick=function(){if(confirm('سيتم مسح كل العدّادات. متأكد؟')){S={start:today(),target:S.target,counts:{}};save();render()}};
 document.addEventListener('visibilitychange',function(){if(!document.hidden)render()});
 
 function build(){var c=document.documentElement.cloneNode(true);
@@ -151,10 +160,11 @@ var s=document.createElement('script');s.id='seed';s.type='application/json';s.t
 var b=c.querySelector('body');b.insertBefore(s,b.firstChild);
 return '<!DOCTYPE html>'+c.outerHTML}
 $('share').onclick=function(){
-var html=build(),name='salawat-wird.html',file;
+var html=build(),name='index.html',file;
 try{file=new File([html],name,{type:'text/html'})}catch(e){file=null}
 var fb=function(){try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);say('تم تجهيز الملف للحفظ')}catch(e){say('المشاركة غير متاحة هنا')}};
 if(file&&navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'ورد الصلاة على النبي'}).catch(function(e){if(!e||e.name!=='AbortError')fb()})}else fb()};
+
 // PWA: manifest + icon embedded as data URIs
 var icon='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#0f766e"/><path d="M300 110a150 150 0 1 0 0 292 120 120 0 0 1 0-292z" fill="#f4d58d"/></svg>');
 try{
