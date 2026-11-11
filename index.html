@@ -6,6 +6,8 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta name="theme-color" content="#0f766e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>ورد الصلاة على النبي ﷺ</title>
 <style>
 :root{--bg:#f6f3ea;--card:#fff;--ink:#16302b;--mut:#6b7f7a;--pri:#0f766e;--pri2:#14b8a6;--gold:#c8962e;--line:#e3ded0;--cell:#efeadb;
@@ -263,7 +265,7 @@ function pinUi(){$('pinb').textContent=S.pin?'تغيير':'تعيين';$('pinx')
 function newPin(){pinModal('رقم سري جديد (٤ أرقام على الأقل)',function(v){return /^\d{4,12}$/.test(v)?null:'اكتب ٤ أرقام على الأقل'},function(a){pinModal('أعد كتابة الرقم',function(v){return v===a?null:'الرقمان غير متطابقين'},function(){S.pin=hp2(a);save();pinUi();say('تم حفظ الرقم السري ✅')})})}
 $('pinb').onclick=function(){if(S.pin)pinModal('الرقم السري الحالي',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},newPin);else newPin()};
 $('pinx').onclick=function(){pinModal('الرقم السري الحالي',function(v){return hp2(v)===S.pin?null:'رقم غير صحيح'},function(){delete S.pin;save();pinUi();say('تمت إزالة الرقم السري')})};
-var VER='2026-11-11.8';
+var VER='2026-11-11.9';
 $('ver').textContent='الإصدار '+VER;
 function backupText(){return JSON.stringify({app:'salawat-wird',v:2,exported:new Date().toISOString(),target:S.target,rate:S.rate,counts:S.counts})}
 $('bk').onclick=function(){
@@ -304,7 +306,7 @@ if(!/^https?:/.test(location.protocol)){if(manual)say('التحديث متاح �
 var base=location.href.split('?')[0].split('#')[0];
 fetch(base+'?nc='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(h){
 var m=h.match(/var VER='([^']+)'/);
-if(m&&m[1]!==VER){say('يوجد إصدار أحدث، جارٍ التحديث…');setTimeout(function(){location.replace(base+'?v='+encodeURIComponent(m[1]))},700)}
+if(m&&m[1]!==VER&&!manual){$('ver').textContent='الإصدار '+VER+' — يوجد إصدار أحدث';say('يوجد إصدار جديد — من الإعدادات اضغط تحديث التطبيق')}else if(m&&m[1]!==VER){say('يوجد إصدار أحدث، جارٍ التحديث…');setTimeout(function(){location.replace(base+'?v='+encodeURIComponent(m[1]))},700)}
 else if(manual)say('أنت على آخر إصدار ✅')
 }).catch(function(){if(manual)say('تعذّر التحقق، تأكد من الاتصال')})}
 $('upd').onclick=function(){check(true)};
@@ -317,14 +319,14 @@ var icon='data:image/svg+xml;utf8,'+encodeURIComponent(ISVG);
 (function(){var im=new Image();im.onload=function(){try{
 var png=function(sz){var c=document.createElement('canvas');c.width=c.height=sz;c.getContext('2d').drawImage(im,0,0,sz,sz);return c.toDataURL('image/png')};
 var a=document.getElementById('ati');if(a)a.href=png(180);
-var m=document.getElementById('mfl'),man=window.__man;
+var man=window.__man,m=document.getElementById('mfl');if(!m&&man){m=document.createElement('link');m.id='mfl';m.rel='manifest';document.head.appendChild(m)}
 if(m&&man){man.icons=[{src:png(192),sizes:'192x192',type:'image/png',purpose:'any'},{src:png(512),sizes:'512x512',type:'image/png',purpose:'any'}];m.href='data:application/manifest+json;charset=utf-8,'+encodeURIComponent(JSON.stringify(man))}
-}catch(e){}};im.src=icon})();
+}catch(e){}};im.onerror=function(){var man=window.__man;if(man){var m=document.createElement('link');m.rel='manifest';m.href='data:application/manifest+json;charset=utf-8,'+encodeURIComponent(JSON.stringify(man));document.head.appendChild(m)}};im.src=icon})();
 try{
   var l=document.createElement('link');l.rel='icon';l.href=icon;document.head.appendChild(l);
   var a=document.createElement('link');a.id='ati';a.rel='apple-touch-icon';a.href=icon;document.head.appendChild(a);
-  var man={name:'ورد الصلاة على النبي',short_name:'ورد الصلاة',lang:'ar',dir:'rtl',display:'standalone',background_color:'#f6f3ea',theme_color:'#0f766e',start_url:'.',icons:[{src:icon,sizes:'512x512',type:'image/svg+xml',purpose:'any'}]};window.__man=man;
-  var m=document.createElement('link');m.id='mfl';m.rel='manifest';m.href='data:application/manifest+json;charset=utf-8,'+encodeURIComponent(JSON.stringify(man));document.head.appendChild(m);
+  var SU=function(){return /^https?:/.test(location.protocol)?location.href.split('?')[0].split('#')[0]:'.'},SC=(function(){var u=SU(),i=u.lastIndexOf('/');return i>0?u.slice(0,i+1):'.'})();var man={name:'ورد الصلاة على النبي',short_name:'ورد الصلاة',lang:'ar',dir:'rtl',display:'standalone',background_color:'#f6f3ea',theme_color:'#0f766e',start_url:SU(),scope:SC,id:SU(),icons:[{src:icon,sizes:'512x512',type:'image/svg+xml',purpose:'any'}]};window.__man=man;
+  
 }catch(e){}
 theme();drawM();render();tick();pinUi();
 })();
